@@ -227,11 +227,11 @@ void PrintMap(char* fName)
 	{
 		for (int j = 0; j < maxWidth; j++)
 		{
-			cout << map[i][j] << " ";
+			//cout << map[i][j] << " ";
 			outputFile << map[i][j];
 		}
 		outputFile << "\n";
-		printf("\n");
+		//printf("\n");
 
 	}
 	outputFile.close();
