@@ -1,0 +1,12 @@
+﻿Build started 25.10.2016 18:11:42.
+     1>Project "C:\OOP\1\maze\maze\maze.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\OOP\1\maze\Debug\maze.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\OOP\1\maze\Debug\maze.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\OOP\1\maze\Debug\maze.lib" /MACHINE:X86 Debug\maze.obj
+         Debug\stdafx.obj
+         LINK : C:\OOP\1\maze\Debug\maze.exe not found or not built by the last incremental link; performing full link
+         maze.vcxproj -> C:\OOP\1\maze\Debug\maze.exe
+     1>Done Building Project "C:\OOP\1\maze\maze\maze.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.64
