@@ -23,11 +23,6 @@ bool FindErrors(char* firstFileName, char* secondFileName)
 	inputFile.close();
 	outputFile.close();
 
-	if (!strcmp(firstFileName, secondFileName))
-	{
-		printf("Same file\n");
-		return 1;
-	}
 
 	if (strlen(firstFileName) == 0 || strlen(secondFileName) == 0)
 	{
@@ -135,7 +130,6 @@ bool FillArray(char* iFileName)
 	string line = "";
 	int width, nA = 0, nB = 0, len, xA = 0, yA = 0, xB = 0, yB = 0;
 	while (!inputFile.eof())
-
 	{
 		//high++;
 		getline(inputFile, line);
@@ -174,7 +168,6 @@ bool FillArray(char* iFileName)
 
 			if (nA == 2 || nB == 2)
 			{
-				printf("A > 1 or B > 1 \n");
 				return 0;
 			}
 
@@ -190,7 +183,6 @@ bool FillArray(char* iFileName)
 	inputFile.close();
 	if (nA == 0 || nB == 0)
 	{
-		printf("A == 0 or B == 0 \n");
 		return 0;
 	}
 
@@ -207,8 +199,6 @@ bool FillArray(char* iFileName)
 
 	return 1;
 }
-
-
 void PrintMap(char* fName)
 {
 	ofstream outputFile(fName);
@@ -216,25 +206,18 @@ void PrintMap(char* fName)
 	{
 		for (int j = 0; j < maxWidth; j++)
 		{
-			//cout << map[i][j] << " ";
 			outputFile << map[i][j];
 		}
 		outputFile << "\n";
-		//printf("\n");
-
 	}
 	outputFile.close();
 }
-
-
-
 
 int main(int argc, char* argv[])
 {
 	printf("\n ------------------------------ \n");
 	if (argc != 3)
 	{
-		printf("Uncorrect number of param \n");
 		return 0;
 	}
 	char *inputFileName = argv[1];
@@ -243,13 +226,9 @@ int main(int argc, char* argv[])
 	{
 		if (FillArray(inputFileName))
 		{
-			PrintMap(outputFileName);
-			
-		}
-		
+			PrintMap(outputFileName);		
+		}		
 	}
-
-	
 	return 0;
 }
 
