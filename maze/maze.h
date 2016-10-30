@@ -5,7 +5,6 @@
 #include <set>
 #include <boost/chrono.hpp>
 
-char map[100][100];
-int newMap[100][100];
 using namespace std;
-int maxWidth = 0, maxHigh = 0;
+const int wall = -2;
+const int noWall = -1;

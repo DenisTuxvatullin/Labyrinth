@@ -3,206 +3,17 @@
 
 #include "stdafx.h"
 #include "maze.h"
-bool FindErrors(char* firstFileName, char* secondFileName)
-{
-
-	ifstream inputFile(firstFileName);
-
-	if (!inputFile)
-	{
-		printf("Error with opening input file %s\n", inputFile);
-		return 1;
-	}
-
-	ofstream outputFile(secondFileName);
-	if (!outputFile)
-	{
-		printf("Error with opening output file %s\n", secondFileName);
-		return 1;
-	}
-	inputFile.close();
-	outputFile.close();
 
 
-	if (strlen(firstFileName) == 0 || strlen(secondFileName) == 0)
-	{
-		printf("Uncorrect input or output file! \n");
-		return 1;
-	}
-	return 0;
-}
-
-bool FindRoad(int xA, int yA, int xB,int  yB)
-{
-	int step = 0;
-	bool add = true;
-	newMap[yB][xB] = 0;
-	while (add)
-	{
-		add = false;
-		for (int i = 0; i < maxWidth; i++)
-			for (int j = 0; j < maxHigh; j++)
-			{
-				if (newMap[j][i] == step)
-				{
-					if (newMap[j + 1][i] != -2 && newMap[j + 1][i] == -1) // низ
-					{
-						newMap[j + 1][i] = step + 1;
-					}
-
-					if (newMap[j - 1][i] != -2 && newMap[j - 1][i] == -1)  //верх
-					{
-						newMap[j - 1][i] = step + 1;
-					}
-
-					if (newMap[j][i - 1] != -2 && newMap[j][i - 1] == -1) //лево
-					{
-						newMap[j][i - 1] = step + 1;
-					}
-
-					if (newMap[j][i + 1] != -2 && newMap[j][i + 1] == -1)
-					{
-						newMap[j][i + 1] = step + 1;
-					}
-				}
-			}
-		step++;
-		add = true;
-		if (newMap[yA][xA] != -1)
-		{
-			add = false;
-		}
-
-		if (step > maxWidth * maxHigh)
-		{
-			add = false;
-			return 0;
-		}
-
-	}
-
-	return 1;
-
-}
-
-void GoToStart(int bx, int by)
-{
-	
-	    int step = newMap[by][bx];
-		bool flag;
-		while (step > 1)
-		{
-			step--;
-			flag = true;
-			if (newMap[by + 1][bx] == step && flag)
-			{
-				map[by + 1][bx] = '.';
-				flag = false;
-				by = by + 1;
-			}
-
-			if (newMap[by - 1][bx] == step && flag)
-			{
-				map[by - 1][bx] = '.';
-				flag = false;
-				by = by - 1;
-			}
-
-			if (newMap[by][bx + 1] == step && flag)
-			{
-				map[by][bx + 1] = '.';
-				flag = false;
-				bx = bx + 1;
-			}
-
-			if (newMap[by][bx - 1] == step && flag)
-			{
-				map[by][bx - 1] = '.';
-				flag = false;
-				bx = bx - 1;
-			}
-		}
-}
-
-bool FillArray(char* iFileName)
-{
-	ifstream inputFile(iFileName);
-	string line = "";
-	int width, nA = 0, nB = 0, len, xA = 0, yA = 0, xB = 0, yB = 0;
-	while (!inputFile.eof())
-	{
-		//high++;
-		getline(inputFile, line);
-		len = line.length();
-		if (len > maxWidth)
-		{
-			maxWidth = len;
-		}
-		width = 0;
-		while (width < len)
-		{
-			
-			if (line[width] == '#'  )
-			{
-				newMap[maxHigh][width] = -2; //стена
-			}
-			else
-			{
-				newMap[maxHigh][width] = -1;//индикатор еще не ступали сюда
-			}
-
-			if (line[width] == 'A')
-			{
-				nA++;
-				xA = width;
-				yA = maxHigh;
-				
-		    }
-
-			if (line[width] == 'B')
-			{
-				nB++;
-				xB = width;
-				yB = maxHigh;
-			}
-
-			if (nA == 2 || nB == 2)
-			{
-				return 0;
-			}
-
-			map[maxHigh][width] = line[width];
-
-			width++;
-			
-
-		}
-		maxHigh++;
-	}
-
-	inputFile.close();
-	if (nA == 0 || nB == 0)
-	{
-		return 0;
-	}
-
-	if (maxWidth > 100 && maxHigh > 100)
-	{
-		return 0;
-	}
-
-	if (FindRoad(xA, yA, xB, yB))
-	{
-		int step = newMap[yA][xA];
-		GoToStart(xA, yA);
-	}
-
-	return 1;
-}
-void PrintMap(char* fName)
+bool PrintMap(char* fName, char map[100][100], int maxWidth, int maxHeight)
 {
 	ofstream outputFile(fName);
-	for (int i = 0; i < maxHigh; i++)
+	if (!outputFile)
+	{
+		return 0;
+	}
+
+	for (int i = 0; i < maxHeight; i++)
 	{
 		for (int j = 0; j < maxWidth; j++)
 		{
@@ -211,24 +22,163 @@ void PrintMap(char* fName)
 		outputFile << "\n";
 	}
 	outputFile.close();
+	return 1;
 }
+void FillMap(int x, int y, int step, int newMap[100][100])
+{
+	if (newMap[x][y] != wall && newMap[x][y] == noWall) // низ
+	{
+		newMap[x][y] = step + 1;
+	}
+}
+bool WavePropagation(int xA, int yA, int xB, int yB, int newMap[100][100], int maxWidth, int maxHeight)
+{
+	int step = 0;
+	bool rightWay = true;
+	newMap[yB][xB] = 0;
+	while (rightWay)
+	{
+		rightWay = false;
+		for (int i = 0; i < maxWidth; i++)
+			for (int j = 0; j < maxHeight; j++)
+			{
+				if (newMap[j][i] == step)
+				{
+					FillMap(j + 1, i, step,  newMap); //низ
+					FillMap(j - 1, i, step, newMap); //верх
+					FillMap(j, i - 1, step, newMap); //лево
+					FillMap(j, i + 1, step, newMap); //право
+				}
+			}
+		step++;
+		rightWay = true;
+		if (newMap[yA][xA] != noWall || step > maxWidth * maxHeight)
+		{
+			rightWay = false;
+		}
+	}
+	return 1;
 
+}
+bool DrawWay(int x, int y, char map[100][100], int newMap[100][100], int step)
+{
+	if (newMap[x][y] == step)
+	{
+		map[x][y] = '.';
+		return 0;
+	}
+	return 1;
+}
+void FindWay(int bx, int by, int newMap[100][100], char map[100][100])
+{
+	
+	    int step = newMap[by][bx];
+		bool nextStep;
+		while (step > 1)
+		{
+			step--;
+			nextStep = true;
+			nextStep = DrawWay(by + 1, bx, map, newMap, step);
+			if (!nextStep)
+			{
+				by++;
+			}
+			nextStep = DrawWay(by - 1, bx, map, newMap, step);
+			if (!nextStep)
+			{
+				by--;
+			}
+			nextStep = DrawWay(by, bx + 1, map, newMap, step);
+			if (!nextStep)
+			{
+				bx++;
+			}
+			nextStep = DrawWay(by, bx - 1, map, newMap, step);
+			if (!nextStep)
+			{
+				bx--;
+			}
+		}
+}
+bool DrawingMap(char* iFileName, char* outputFileName)
+{	
+	ifstream inputFile(iFileName);
+	if (!inputFile)
+	{
+		return 1;
+	}
+	string line = "";
+	char map[100][100];
+	int width, nA = 0, nB = 0, len, xA = 0, yA = 0, xB = 0, yB = 0, newMap[100][100], maxWidth = 0, maxHeight = 0;
+	while (!inputFile.eof())
+	{
+		getline(inputFile, line);
+		len = line.length();
+		if (len > maxWidth)
+		{
+			maxWidth = len;
+		}
+		width = 0;
+
+		while (width < len)
+		{			
+			if (line[width] == '#'  )
+			{
+				newMap[len][width] = wall; //стена
+			}
+			else
+			{
+				newMap[len][width] = noWall;//индикатор еще не ступали сюда
+			}
+			if (line[width] == 'A')
+			{
+				nA++;
+				xA = width;
+				yA = len;				
+		    }
+			if (line[width] == 'B')
+			{
+				nB++;
+				xB = width;
+				yB = len;
+			}
+			if (nA == 2 || nB == 2)
+			{
+				inputFile.close();
+				return 0;
+			}
+			map[maxHeight][width] = line[width];
+			width++;
+		}
+		maxHeight++;
+	}
+
+	inputFile.close();
+	if (nA == 0 || nB == 0)
+	{
+		return 0;
+	}
+	if (maxWidth > 100 && maxHeight > 100)
+	{
+		return 0;
+	}
+	if (WavePropagation(xA, yA, xB, yB, newMap, maxWidth, maxHeight))
+	{
+		int step = newMap[yA][xA];
+		FindWay(xA, yA, newMap, map);
+		PrintMap(outputFileName, map, maxWidth, maxHeight);
+	}
+	return 1;
+}
 int main(int argc, char* argv[])
 {
-	printf("\n ------------------------------ \n");
 	if (argc != 3)
 	{
 		return 0;
 	}
 	char *inputFileName = argv[1];
 	char *outputFileName = argv[2];
-	if (!FindErrors(inputFileName, outputFileName))
-	{
-		if (FillArray(inputFileName))
-		{
-			PrintMap(outputFileName);		
-		}		
-	}
+	DrawingMap(inputFileName, outputFileName);
 	return 0;
 }
 
