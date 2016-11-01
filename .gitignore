@@ -3,6 +3,8 @@
 *.exe
 ipch
 Den
+*.lik
+*.pdb
 
 # Windows image file caches
 Thumbs.db
