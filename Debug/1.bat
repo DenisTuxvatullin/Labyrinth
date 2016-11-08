@@ -1,6 +1,5 @@
 @echo off
 
-
 maze.exe
 IF ERRORLEVEL 1 GOTO err
 
