@@ -123,11 +123,11 @@ bool DrawingMap(char* iFileName, char* outputFileName)
 		{
 			if (line[width] == '#')
 			{
-				newMap[maxHeight][width] = wall; //стена
+				newMap[maxHeight][width] = wall;
 			}
 			else
 			{
-				newMap[maxHeight][width] = noWall;//индикатор еще не ступали сюда
+				newMap[maxHeight][width] = noWall;
 			}
 
 			if (line[width] == 'A')
