@@ -4,7 +4,8 @@
 
 #include "stdafx.h"
 #include "maze.h"
-
+#include <String>
+const int Max = 100;
 
 bool PrintMap(char* fName, char map[100][100], int maxWidth, int maxHeight)
 {
@@ -24,14 +25,14 @@ bool PrintMap(char* fName, char map[100][100], int maxWidth, int maxHeight)
 	outputFile.close();
 	return 1;
 }
-void WaveDirection(int x, int y, int step, int newMap[100][100])
+void WaveDirection(int x, int y, int step, int newMap[Max][Max])
 {
 	if (newMap[x][y] != wall && newMap[x][y] == noWall)
 	{
 		newMap[x][y] = step + 1;
 	}
 }
-bool WavePropagation(int xA, int yA, int xB, int yB, int newMap[100][100], int maxWidth, int maxHeight)
+bool WavePropagation(int xA, int yA, int xB, int yB, int newMap[Max][Max], int maxWidth, int maxHeight)
 {
 	int step = 0;
 	bool rightWay = true;
@@ -60,7 +61,7 @@ bool WavePropagation(int xA, int yA, int xB, int yB, int newMap[100][100], int m
 	return 1;
 
 }
-bool DrawWay(int x, int y, char map[100][100], int newMap[100][100], int step)
+bool DrawWay(int x, int y, char map[Max][Max], int newMap[Max][Max], int step)
 {
 	if (newMap[x][y] == step)
 	{
@@ -69,7 +70,7 @@ bool DrawWay(int x, int y, char map[100][100], int newMap[100][100], int step)
 	}
 	return 1;
 }
-void FindWay(int bx, int by, int newMap[100][100], char map[100][100])
+void FindWay(int bx, int by, int newMap[Max][Max], char map[Max][Max])
 {
 	int step = newMap[by][bx];
 	bool nextStep;
@@ -81,16 +82,19 @@ void FindWay(int bx, int by, int newMap[100][100], char map[100][100])
 		if (!nextStep)
 		{
 			by++;
+			continue;
 		}
 		nextStep = DrawWay(by - 1, bx, map, newMap, step);
 		if (!nextStep)
 		{
 			by--;
+			continue;
 		}
 		nextStep = DrawWay(by, bx + 1, map, newMap, step);
 		if (!nextStep)
 		{
 			bx++;
+			continue;
 		}
 		nextStep = DrawWay(by, bx - 1, map, newMap, step);
 		if (!nextStep)
@@ -102,24 +106,19 @@ void FindWay(int bx, int by, int newMap[100][100], char map[100][100])
 bool DrawingMap(char* iFileName, char* outputFileName)
 {
 	ifstream inputFile(iFileName);
-	if (!inputFile)
-	{
-		return 1;
-	}
+	if (!inputFile) return 1;
 	string line = "";
 	char map[100][100];
-	int width, nA = 0, nB = 0, len, xA = 0, yA = 0, xB = 0, yB = 0, newMap[100][100], maxWidth = 0, maxHeight = 0;
+	int width, nA = 0, nB = 0, xA = 0, yA = 0, xB = 0, yB = 0, newMap[Max][Max], maxWidth = 0, maxHeight = 0;
 	while (!inputFile.eof())
 	{
-		getline(inputFile, line);
-		len = line.length();
-		if (len > maxWidth)
+		std::getline(inputFile, line);
+		if (line.length() > maxWidth)
 		{
-			maxWidth = len;
+			maxWidth = line.length();
 		}
 		width = 0;
-
-		while (width < len)
+		while (width < line.length())
 		{
 			if (line[width] == '#')
 			{
@@ -129,7 +128,6 @@ bool DrawingMap(char* iFileName, char* outputFileName)
 			{
 				newMap[maxHeight][width] = noWall;
 			}
-
 			if (line[width] == 'A')
 			{
 				nA++;
@@ -142,23 +140,13 @@ bool DrawingMap(char* iFileName, char* outputFileName)
 				xB = width;
 				yB = maxHeight;
 			}
-			if (nA == 2 || nB == 2)
-			{
-				inputFile.close();
-				return 0;
-			}
 			map[maxHeight][width] = line[width];
 			width++;
 		}
 		maxHeight++;
 	}
-
 	inputFile.close();
-	if (nA == 0 || nB == 0)
-	{
-		return 0;
-	}
-	if (maxWidth > 100 && maxHeight > 100)
+	if ((nA != 1 || nB != 1) || maxWidth > Max || maxHeight > Max)
 	{
 		return 0;
 	}
@@ -168,7 +156,6 @@ bool DrawingMap(char* iFileName, char* outputFileName)
 		FindWay(xA, yA, newMap, map);
 		PrintMap(outputFileName, map, maxWidth, maxHeight);
 	}
-
 	return 1;
 }
 int main(int argc, char* argv[])
