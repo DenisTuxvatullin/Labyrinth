@@ -35,11 +35,10 @@ void WaveDirection(int x, int y, int step, int newMap[Max][Max])
 bool WavePropagation(int xA, int yA, int xB, int yB, int newMap[Max][Max], int maxWidth, int maxHeight)
 {
 	int step = 0;
-	bool rightWay = true;
+	bool noWay = false;
 	newMap[yB][xB] = 0;
-	while (rightWay)
+	while (!noWay)
 	{
-		rightWay = false;
 		for (int i = 0; i < maxWidth; i++)
 			for (int j = 0; j < maxHeight; j++)
 			{
@@ -52,10 +51,9 @@ bool WavePropagation(int xA, int yA, int xB, int yB, int newMap[Max][Max], int m
 				}
 			}
 		step++;
-		rightWay = true;
 		if (newMap[yA][xA] != noWall || step > maxWidth * maxHeight)
 		{
-			rightWay = false;
+			noWay = true;
 		}
 	}
 	return 1;
@@ -109,7 +107,8 @@ bool DrawingMap(char* iFileName, char* outputFileName)
 	if (!inputFile) return 1;
 	string line = "";
 	char map[Max][Max];
-	int width, nA = 0, nB = 0, xA = 0, yA = 0, xB = 0, yB = 0, newMap[Max][Max], maxWidth = 0, maxHeight = 0;
+	int  nA = 0, nB = 0, xA = 0, yA = 0, xB = 0, yB = 0, newMap[Max][Max], maxHeight = 0;
+	unsigned int width, maxWidth = 0;
 	while (!inputFile.eof())
 	{
 		std::getline(inputFile, line);
