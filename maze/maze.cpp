@@ -7,7 +7,7 @@
 #include <String>
 const int Max = 100;
 
-bool PrintMap(char* fName, char map[100][100], int maxWidth, int maxHeight)
+bool PrintMap(char* fName, char map[Max][Max], int maxWidth, int maxHeight)
 {
 	ofstream outputFile(fName);
 	if (!outputFile)
@@ -108,7 +108,7 @@ bool DrawingMap(char* iFileName, char* outputFileName)
 	ifstream inputFile(iFileName);
 	if (!inputFile) return 1;
 	string line = "";
-	char map[100][100];
+	char map[Max][Max];
 	int width, nA = 0, nB = 0, xA = 0, yA = 0, xB = 0, yB = 0, newMap[Max][Max], maxWidth = 0, maxHeight = 0;
 	while (!inputFile.eof())
 	{
